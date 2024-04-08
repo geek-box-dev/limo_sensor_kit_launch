@@ -26,24 +26,17 @@ from launch_ros.descriptions import ComposableNode
 
 def launch_setup(context, *args, **kwargs):
     # set concat filter as a component
-    concat_component = ComposableNode(
+    component = ComposableNode(
         package="pointcloud_preprocessor",
-        plugin="pointcloud_preprocessor::PointCloudConcatenateDataSynchronizerComponent",
-        name="concatenate_data",
+        plugin="pointcloud_preprocessor::PassThroughFilterComponent",
+        name="passthrough_data",
         remappings=[
-            ("~/input/twist", "/sensing/vehicle_velocity_converter/twist_with_covariance"),
+            ("input", "/livox/lidar"),
             ("output", "concatenated/pointcloud"),
         ],
         parameters=[
             {
-                "input_topics": [
-                    "/sensing/lidar/top/pointcloud_before_sync",
-                    "/sensing/lidar/left/pointcloud_before_sync",
-                    "/sensing/lidar/right/pointcloud_before_sync",
-                ],
                 "output_frame": LaunchConfiguration("base_frame"),
-                "input_twist_topic_type": "twist",
-                "publish_synchronized_pointcloud": True,
             }
         ],
         extra_arguments=[{"use_intra_process_comms": LaunchConfiguration("use_intra_process")}],
@@ -51,7 +44,7 @@ def launch_setup(context, *args, **kwargs):
 
     # load concat or passthrough filter
     concat_loader = LoadComposableNodes(
-        composable_node_descriptions=[concat_component],
+        composable_node_descriptions=[component],
         target_container=LaunchConfiguration("pointcloud_container_name"),
         condition=IfCondition(LaunchConfiguration("use_concat_filter")),
     )

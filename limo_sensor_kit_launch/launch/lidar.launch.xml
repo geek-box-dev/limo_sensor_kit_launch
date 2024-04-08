@@ -8,16 +8,18 @@
 
   <group>
     <push-ros-namespace namespace="lidar"/>
-    <include file="$(find-pkg-share common_sensor_launch)/launch/livox_MID360.launch.py">
-      <arg name="use_intra_process" value="true"/>
-      <arg name="use_multithread" value="true"/>
-    </include>
+    <!-- <node pkg="topic_tools" exec="relay" name="livox_lidar_relay" output="log">
+      <param name="input_topic" value="/livox/lidar"/>
+      <param name="output_topic" value="/sensing/lidar/concatenated/pointcloud"/>
+      <param name="type" value="sensor_msgs/msg/PointCloud2"/>
+      <param name="reliability" value="best_effort"/>
+    </node> -->
 
-    <!-- <include file="$(find-pkg-share limo_sensor_kit_launch)/launch/pointcloud_preprocessor.launch.py">
+    <include file="$(find-pkg-share limo_sensor_kit_launch)/launch/pointcloud_preprocessor.launch.py">
       <arg name="base_frame" value="base_link"/>
       <arg name="use_intra_process" value="true"/>
       <arg name="use_multithread" value="true"/>
       <arg name="pointcloud_container_name" value="$(var pointcloud_container_name)"/>
-    </include> -->
+    </include>
   </group>
 </launch>
